@@ -1,0 +1,19 @@
+parameters:
+  tissue.adapter.clamav.class: CL\Tissue\Adapter\ClamAv\ClamAvAdapter
+  tissue.adapter.mock.class: CL\Tissue\Adapter\MockAdapter
+  tissue.adapter.null.class: CL\Tissue\Adapter\NullAdapter
+
+services:
+  CL\Tissue\Util\AdapterRegistry: ~
+
+  tissue.scanner:
+    class: "%tissue.adapter.mock.class%"
+    factory: ['@CL\Tissue\Util\AdapterRegistry', get]
+    arguments:
+      - "%tissue.adapter.alias%"
+
+  CL\Bundle\TissueBundle\Validator\Constraints\CleanFileValidator:
+    arguments:
+      - "@tissue.scanner"
+    tags:
+      - { name: validator.constraint_validator, alias: clean_file }
