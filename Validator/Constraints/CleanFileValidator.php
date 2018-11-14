@@ -11,7 +11,10 @@
 
 namespace CL\Bundle\TissueBundle\Validator\Constraints;
 
+use CL\Bundle\TissueBundle\DetectionVirusEvent;
+use CL\Bundle\TissueBundle\Events;
 use CL\Tissue\Adapter\AdapterInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\FileValidator;
@@ -28,11 +31,20 @@ class CleanFileValidator extends FileValidator
     private $adapter;
 
     /**
-     * @param AdapterInterface|null $adapter
+     * @var EventDispatcherInterface
      */
-    public function __construct(AdapterInterface $adapter = null)
+    private $eventDispatcher;
+
+    /**
+     * Constructor.
+     *
+     * @param AdapterInterface|null    $adapter
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(?AdapterInterface $adapter, EventDispatcherInterface $eventDispatcher)
     {
         $this->adapter = $adapter;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -56,6 +68,9 @@ class CleanFileValidator extends FileValidator
                 unlink($path);
             }
             $this->context->buildViolation($constraint->virusDetectedMessage)->addViolation();
+
+            $event = new DetectionVirusEvent($value, $constraint);
+            $this->eventDispatcher->dispatch(Events::DETECTION_VIRUS, $event);
 
             return;
         }

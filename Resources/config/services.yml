@@ -15,5 +15,6 @@ services:
   CL\Bundle\TissueBundle\Validator\Constraints\CleanFileValidator:
     arguments:
       - "@tissue.scanner"
+      - "@event_dispatcher"
     tags:
       - { name: validator.constraint_validator, alias: clean_file }
