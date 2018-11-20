@@ -11,7 +11,7 @@
 
 namespace CL\Bundle\TissueBundle\Validator\Constraints;
 
-use CL\Bundle\TissueBundle\DetectionVirusEvent;
+use CL\Bundle\TissueBundle\Event\DetectionVirusEvent;
 use CL\Bundle\TissueBundle\Events;
 use CL\Tissue\Adapter\AdapterInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -26,25 +26,25 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class CleanFileValidator extends FileValidator
 {
     /**
-     * @var AdapterInterface|null
-     */
-    private $adapter;
-
-    /**
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
 
     /**
+     * @var AdapterInterface|null
+     */
+    private $adapter;
+
+    /**
      * Constructor.
      *
-     * @param AdapterInterface|null    $adapter
      * @param EventDispatcherInterface $eventDispatcher
+     * @param AdapterInterface|null    $adapter
      */
-    public function __construct(?AdapterInterface $adapter, EventDispatcherInterface $eventDispatcher)
+    public function __construct(EventDispatcherInterface $eventDispatcher, ?AdapterInterface $adapter)
     {
-        $this->adapter = $adapter;
         $this->eventDispatcher = $eventDispatcher;
+        $this->adapter = $adapter;
     }
 
     /**

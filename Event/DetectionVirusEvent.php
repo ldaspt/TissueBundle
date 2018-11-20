@@ -1,6 +1,6 @@
 <?php
 
-namespace CL\Bundle\TissueBundle;
+namespace CL\Bundle\TissueBundle\Event;
 
 use CL\Bundle\TissueBundle\Validator\Constraints\CleanFile;
 use Symfony\Component\EventDispatcher\Event;
