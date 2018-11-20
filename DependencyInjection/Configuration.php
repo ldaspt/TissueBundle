@@ -85,7 +85,7 @@ class Configuration implements ConfigurationInterface
                     ->validate()
                         ->ifArray()
                         ->then(function ($v) {
-                            if ($v['alias'] === 'clamavphp' && !class_exists('\CL\Tissue\Adapter\ClamAVPHP\ClamAVPHPAdapter')) {
+                            if ('clamavphp' === $v['alias'] && !class_exists('\CL\Tissue\Adapter\ClamAVPHP\ClamAVPHPAdapter')) {
                                 throw new InvalidConfigurationException('If you want to use the `clamavphp` adapter, you need to add the `cleentfaar/tissue-clamavphp-adapter` package to your composer.json');
                             }
 

@@ -45,7 +45,7 @@ class TissueExtension extends Extension
         }
 
         foreach ($config['adapter'] as $key => $val) {
-            if ($key === 'options') {
+            if ('options' === $key) {
                 foreach ($val as $k => $v) {
                     $container->setParameter(sprintf('tissue.adapter.options.%s', $k), $v);
                 }
