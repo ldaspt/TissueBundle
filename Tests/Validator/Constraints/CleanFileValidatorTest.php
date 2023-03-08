@@ -68,15 +68,27 @@ class CleanFileValidatorTest extends ConstraintValidatorTestCase
 
     public function testCleanFileIsValid()
     {
-        $this->validator->validate(new UploadedFile(__DIR__ .  '/fixtures/clean.txt', 'clean_file',null, null,null, true), new CleanFile());
+        $this->validator->validate($this->createUploadedFile(__DIR__ .  '/fixtures/clean.txt', 'clean_file'), new CleanFile());
 
         $this->assertNoViolation();
     }
 
     public function testInfectedFileIsInvalid()
     {
-        $this->validator->validate(new UploadedFile(__DIR__ .  '/fixtures/infected.txt', 'infected_file', null, null,null, true), new CleanFile());
+        $this->validator->validate($this->createUploadedFile(__DIR__ .  '/fixtures/infected.txt', 'infected_file'), new CleanFile());
 
         $this->buildViolation('This file contains a virus.')->assertRaised();
+    }
+
+    private function createUploadedFile(string $filepath, string $orignalName): UploadedFile
+    {
+        $class = new \ReflectionClass(UploadedFile::class);
+
+        if ($class->getConstructor()->getNumberOfParameters() === 6) {
+            // BC layer for symfony 3.4
+            return new UploadedFile($filepath, $orignalName,null, null, UPLOAD_ERR_OK, true);
+        }
+
+        return new UploadedFile($filepath, $orignalName,null,UPLOAD_ERR_OK, true);
     }
 }
