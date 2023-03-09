@@ -15,10 +15,14 @@ use CL\Bundle\TissueBundle\Validator\Constraints\CleanFile;
 use CL\Bundle\TissueBundle\Validator\Constraints\CleanFileValidator;
 use CL\Tissue\Adapter\MockAdapter;
 use CL\Tissue\Tests\Adapter\AbstractAdapterTestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Tests\Constraints\AbstractConstraintValidatorTest;
 use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
-class CleanFileValidatorTest extends AbstractConstraintValidatorTest
+
+class CleanFileValidatorTest extends ConstraintValidatorTestCase
 {
     /**
      * @var CleanFileValidator
@@ -42,7 +46,10 @@ class CleanFileValidatorTest extends AbstractConstraintValidatorTest
 
     protected function createValidator()
     {
-        return new CleanFileValidator(new MockAdapter());
+        return new CleanFileValidator(
+            $this->createMock(EventDispatcherInterface::class),
+            new MockAdapter()
+        );
     }
 
     public function testNullIsValid()
@@ -61,15 +68,27 @@ class CleanFileValidatorTest extends AbstractConstraintValidatorTest
 
     public function testCleanFileIsValid()
     {
-        $this->validator->validate(AbstractAdapterTestCase::getPathToCleanFile(), new CleanFile());
+        $this->validator->validate($this->createUploadedFile(__DIR__ .  '/fixtures/clean.txt', 'clean_file'), new CleanFile());
 
         $this->assertNoViolation();
     }
 
     public function testInfectedFileIsInvalid()
     {
-        $this->validator->validate(AbstractAdapterTestCase::getPathToInfectedFile(), new CleanFile());
+        $this->validator->validate($this->createUploadedFile(__DIR__ .  '/fixtures/infected.txt', 'infected_file'), new CleanFile());
 
         $this->buildViolation('This file contains a virus.')->assertRaised();
+    }
+
+    private function createUploadedFile(string $filepath, string $orignalName): UploadedFile
+    {
+        $class = new \ReflectionClass(UploadedFile::class);
+
+        if ($class->getConstructor()->getNumberOfParameters() === 6) {
+            // BC layer for symfony 3.4
+            return new UploadedFile($filepath, $orignalName,null, null, UPLOAD_ERR_OK, true);
+        }
+
+        return new UploadedFile($filepath, $orignalName,null,UPLOAD_ERR_OK, true);
     }
 }

@@ -67,6 +67,7 @@ class CleanFileValidator extends FileValidator
             if ($constraint->autoRemove) {
                 unlink($path);
             }
+
             $this->context->buildViolation($constraint->virusDetectedMessage)->addViolation();
 
             $event = new DetectionVirusEvent($value, $constraint);

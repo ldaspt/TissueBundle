@@ -3,10 +3,13 @@
 namespace CL\Bundle\TissueBundle\Tests\DependencyInjection;
 
 use CL\Bundle\TissueBundle\DependencyInjection\Configuration;
-use Matthias\SymfonyConfigTest\PhpUnit\AbstractConfigurationTestCase;
+use PHPUnit\Framework\TestCase;
+use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
 
-class ConfigurationTest extends AbstractConfigurationTestCase
+class ConfigurationTest extends TestCase
 {
+    use ConfigurationTestCaseTrait;
+
     public function testValuesAreInvalidIfRequiredValueIsNotProvided()
     {
         $this->assertConfigurationIsInvalid(
@@ -87,7 +90,8 @@ class ConfigurationTest extends AbstractConfigurationTestCase
                     'adapter' => [
                         'alias'   => 'foobar',
                         'options' => [],
-                    ]
+                    ],
+                    'enabled' => true,
                 ]
             ],
             [
@@ -100,25 +104,29 @@ class ConfigurationTest extends AbstractConfigurationTestCase
                     'adapter' => [
                         'alias'   => 'foobar',
                         'options' => [],
-                    ]
+                    ],
+                    'enabled' => true,
                 ]
             ],
             [
                 [
                     'adapter' => [
-                        'alias' => 'foobar',
+                        'alias' => 'clamav',
                         'options' => [
-                            'apple' => 'pie'
+                            'bin' => '/usr/bin/pie',
+                            'database' => 'foobar',
                         ]
-                    ]
+                    ],
                 ],
                 [
                     'adapter' => [
-                        'alias'   => 'foobar',
+                        'alias'   => 'clamav',
                         'options' => [
-                            'apple' => 'pie'
+                            'bin' => '/usr/bin/pie',
+                            'database' => 'foobar',
                         ],
-                    ]
+                    ],
+                    'enabled' => true,
                 ]
             ]
         ];

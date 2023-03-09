@@ -37,9 +37,15 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $tb = new TreeBuilder();
+
+        $treeBuilder = new TreeBuilder('tissue');
         $self = $this;
-        $rootNode = $tb->root('tissue');
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $rootNode = $treeBuilder->root('tissue');
+        }
 
         $rootNode
             ->canBeEnabled()
@@ -101,7 +107,7 @@ class Configuration implements ConfigurationInterface
             ->end()
         ;
 
-        return $tb;
+        return $treeBuilder;
     }
 
     /**
