@@ -6,6 +6,10 @@
          colors="true"
          bootstrap="Tests/bootstrap.php"
 >
+    <php>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[direct]=0"/>
+    </php>
+
     <testsuites>
         <testsuite name="CL TissueBundle Test Suite">
             <directory>./Tests/</directory>

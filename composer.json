@@ -31,7 +31,7 @@
     "symfony/phpunit-bridge": "^3.4 || ^4.0 || ^5.0",
     "matthiasnoback/symfony-config-test": "^3.1 || ^4.0"
   },
-  "suggests": {
+  "suggest": {
     "cleentfaar/tissue-clamavphp-adapter": "If you want to scan your files using the PHP-extension of the ClamAV engine"
   },
   "minimum-stability": "dev",
